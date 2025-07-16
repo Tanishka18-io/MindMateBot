@@ -1,0 +1,6 @@
+streamlit==1.35.0
+pandas
+spacy
+textblob
+# For downloading spaCy English model
+spacy-lookups-data

@@ -1,0 +1,9 @@
+{
+  "sadness": ["I feel sad", "I'm feeling down", "I’m crying"],
+  "anxiety": ["I'm anxious", "I feel nervous", "I’m panicking"],
+  "stress": ["I’m stressed", "Too much pressure", "Exams are killing me"],
+  "motivation": ["I want to do better", "I’m trying my best"],
+  "gratitude": ["Thank you", "I appreciate that", "Feeling blessed"],
+  "greeting": ["Hi", "Hey", "Hello", "Good evening"],
+  "loneliness": ["I feel alone", "Nobody cares", "I have no one"]
+}
