@@ -4,3 +4,4 @@ spacy
 textblob
 # For downloading spaCy English model
 spacy-lookups-data
+PyPDF2

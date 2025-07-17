@@ -1,297 +1,21 @@
-
-
-
-# import streamlit as st
-# import pandas as pd
-# import os
-# import html
-# from utils import load_json, save_mood
-# from responses import get_active_listening, get_random_tip, get_random_prompt, crisis_disclaimer
-# from nlp_utils import detect_intent
-# import google.generativeai as genai
-# from dotenv import load_dotenv
-# from streamlit.components.v1 import html as st_html
-
-# # ---------------- CONFIG ----------------
-# st.set_page_config(page_title="MindMate", page_icon="🧠", layout="wide")
-
-# # ---------------- GEMINI SETUP ----------------
-# load_dotenv()
-# genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-# gemini_model = genai.GenerativeModel("gemini-1.5-flash")
-
-# # ---------------- SESSION ----------------
-# if "username" not in st.session_state:
-#     st.session_state.username = ""
-# if "daily_goal" not in st.session_state:
-#     st.session_state.daily_goal = ""
-# if "greeted" not in st.session_state:
-#     st.session_state.greeted = False
-# if "chat_history" not in st.session_state:
-#     st.session_state.chat_history = []
-# if "journal_entries" not in st.session_state:
-#     st.session_state.journal_entries = []
-
-# # ---------------- THEME ----------------
-
-
-# import streamlit as st
-
-# # Theme toggle
-# theme = st.sidebar.radio("🗿 Choose Theme", ["Light", "Dark"])
-# show_sidebar = st.sidebar.checkbox("📂 Toggle Sidebar", value=True)
-
-# if theme == "Dark":
-#     background = "#121212"
-#     primary = "#00cec9"
-#     input_bg = "#1e1e1e"
-#     text_color = "#f5f5f5"
-#     button_border = "#00cec9"
-#     journal_color = "#2c2c2c"
-#     highlight_color = "#81ecec"
-# else:
-#     background = "#f0f3f4"
-#     primary = "#0984e3"
-#     input_bg = "#ffffff"
-#     text_color = "#2d3436"
-#     button_border = "#74b9ff"
-#     journal_color = "#dfe6e9"
-#     highlight_color = "#0984e3"
-
-# # Hide sidebar if toggled off
-# if not show_sidebar:
-#     st.markdown(
-#         """<style>
-#         section[data-testid="stSidebar"] {
-#             display: none !important;
-#         }
-#         </style>""", unsafe_allow_html=True
-#     )
-
-# # Apply the style
-# st.markdown(f"""
-#     <style>
-#     @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600&display=swap');
-
-#     html, body, .stApp {{
-#         font-family: 'Comfortaa', sans-serif;
-#         background-color: {background};
-#         color: {text_color};
-#         transition: background-color 0.8s ease, color 0.8s ease;
-#         scroll-behavior: smooth;
-#     }}
-
-#     .stTextInput, .stTextArea textarea {{
-#         background-color: {input_bg} !important;
-#         color: {text_color} !important;
-#         border: 2px solid {primary} !important;
-#         border-radius: 15px;
-#         padding: 12px;
-#         transition: all 0.3s ease-in-out;
-#         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-#     }}
-
-#     .stTextInput:hover, .stTextArea:hover textarea {{
-#         transform: scale(1.02);
-#         box-shadow: 0 8px 18px rgba(0,0,0,0.2);
-#     }}
-
-#     button[kind="primary"] {{
-#         background-color: {primary} !important;
-#         color: white !important;
-#         border-radius: 15px;
-#         padding: 0.6em 1.2em;
-#         font-weight: 600;
-#         font-size: 1rem;
-#         transition: transform 0.3s ease, background-color 0.4s ease;
-#         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-#     }}
-
-#     button[kind="primary"]:hover {{
-#         transform: scale(1.05);
-#         background-color: {highlight_color} !important;
-#         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-#     }}
-
-#     .journal-entry {{
-#         background-color: {journal_color};
-#         padding: 20px;
-#         margin: 15px 0;
-#         border-left: 5px solid {primary};
-#         border-radius: 15px;
-#         color: {text_color};
-#         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-#         transition: all 0.3s ease-in-out;
-#         animation: fadeInUp 0.5s ease;
-#     }}
-
-#     .journal-entry:hover {{
-#         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-#         transform: scale(1.01);
-#     }}
-
-#     .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
-#         color: {primary};
-#         font-weight: 700;
-#         text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-#         transition: all 0.5s ease;
-#         animation: popFade 1s ease;
-#     }}
-
-#     .highlight {{
-#         color: {highlight_color};
-#         font-weight: 600;
-#     }}
-
-#     @keyframes fadeInUp {{
-#         from {{
-#             opacity: 0;
-#             transform: translateY(20px);
-#         }}
-#         to {{
-#             opacity: 1;
-#             transform: translateY(0);
-#         }}
-#     }}
-
-#     @keyframes popFade {{
-#         0% {{
-#             transform: scale(0.95);
-#             opacity: 0;
-#         }}
-#         100% {{
-#             transform: scale(1);
-#             opacity: 1;
-#         }}
-#     }}
-
-#     .chat-bubble {{
-#         padding: 15px;
-#         margin: 10px 0;
-#         border-radius: 15px;
-#         animation: fadeInUp 0.4s ease;
-#     }}
-
-#     .chat-bubble.user {{
-#         background-color: #ffeaa7;
-#         color: #2d3436;
-#         align-self: flex-end;
-#     }}
-
-#     .chat-bubble.bot {{
-#         background-color: #a29bfe;
-#         color: white;
-#     }}
-#     </style>
-# """, unsafe_allow_html=True)
-
-
-# # ---------------- UI ----------------
-# with st.sidebar:
-#     if st.session_state.username:
-#         st.markdown(f"👤 **User:** {st.session_state.username}")
-#     if st.session_state.daily_goal:
-#         st.markdown(f"🎯 **Goal:** {st.session_state.daily_goal}")
-#     st.markdown("---")
-#     st.markdown("Made with ❤️ for mental wellness")
-
-# st.title(":brain: MindMate – Your AI Therapeutic Companion")
-
-# # ---------------- User Info Collection ----------------
-# if not st.session_state.username:
-#     with st.form("username_form"):
-#         st.markdown("## 👋 Welcome to MindMate!")
-#         name_input = st.text_input("What should I call you?")
-#         submitted = st.form_submit_button("Continue")
-#         if submitted and name_input.strip():
-#             st.session_state.username = name_input.strip()
-#             st.rerun()
-
-# if st.session_state.username and not st.session_state.daily_goal:
-#     with st.form("goal_form"):
-#         goal_input = st.text_input(f"🎯 Hi {st.session_state.username}, what's your goal for today?")
-#         submitted = st.form_submit_button("Set Goal")
-#         if submitted and goal_input.strip():
-#             st.session_state.daily_goal = goal_input.strip()
-#             st.rerun()
-
-# # ---------------- Tabs ----------------
-# tab1, tab2 = st.tabs(["💬 Chat", "📓 Journal"])
-
-# # ---------------- Chat ----------------
-# with tab1:
-#     with st.form("chat_form", clear_on_submit=True):
-#         user_input = st.text_input("You:", "")
-#         submitted = st.form_submit_button("Send")
-
-#     if submitted and user_input:
-#         if user_input.lower().startswith("mood:"):
-#             mood = user_input.split(":", 1)[-1].strip()
-#             save_mood(mood)
-#             response = f"Mood recorded: **{mood}**"
-#         else:
-#             try:
-#                 gemini_response = gemini_model.generate_content(user_input)
-#                 reply = gemini_response.text
-#             except Exception as e:
-#                 reply = f"⚠️ Error: {str(e)}"
-
-#             listening = get_active_listening()
-#             tip = get_random_tip(load_json("data/cbt_tips.json"))
-#             prompt = get_random_prompt(load_json("data/prompts.json"))
-#             response = f"{reply}\n\n{listening}\n\n**Tip:** {tip}\n\n**Prompt:** {prompt}\n\n{crisis_disclaimer()}"
-
-#         st.session_state.chat_history.append(("You", user_input))
-#         st.session_state.chat_history.append(("MindMate", response))
-
-#     st.markdown("### 🔨 Chat History")
-#     for sender, message in st.session_state.chat_history:
-#         safe_msg = html.escape(message).encode('utf-16', 'surrogatepass').decode('utf-16')
-#         st.markdown(f"**{sender}:** {safe_msg}")
-
-# # ---------------- Journal ----------------
-# with tab2:
-#     st.subheader(":memo: Journal your thoughts")
-#     entry = st.text_area("Write here:")
-#     if st.button("💾 Save Entry"):
-#         if entry.strip():
-#             with open("data/journal.txt", "a", encoding="utf-8") as f:
-#                 f.write(f"{entry.strip()}\n---\n")
-#             st.success("Entry saved!")
-
-#     if os.path.exists("data/journal.txt"):
-#         with open("data/journal.txt", "r", encoding="utf-8") as f:
-#             all_entries = f.read().split("---")
-#             all_entries = [e.strip() for e in all_entries if e.strip()]
-
-#         st.subheader(":books: Your Entries")
-#         for i, e in enumerate(reversed(all_entries[-5:])):
-#             col1, col2 = st.columns([6, 1])
-#             with col1:
-#                 new_text = st.text_area(f"Entry {i+1}", e, key=f"entry_{i}")
-#             with col2:
-#                 if st.button("🗑️ Delete", key=f"del_{i}"):
-#                     all_entries.pop(all_entries.index(e))
-#                     with open("data/journal.txt", "w", encoding="utf-8") as f:
-#                         f.write("\n---\n".join(all_entries))
-#                     st.rerun()
-#                 if st.button("✅ Update", key=f"upd_{i}"):
-#                     all_entries[all_entries.index(e)] = new_text
-#                     with open("data/journal.txt", "w", encoding="utf-8") as f:
-#                         f.write("\n---\n".join(all_entries))
-#                     st.success("Entry updated!")
-#                     st.rerun()
-
-
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import os
 import html
-from utils import load_json, save_mood
+from utils import (
+    load_json,
+    save_mood,
+    register_user,
+    authenticate_user,
+    save_user_journal,
+    load_user_journal,
+    get_user_journal_path,
+)
 from responses import get_active_listening, get_random_tip, get_random_prompt, crisis_disclaimer
 from nlp_utils import detect_intent
 import google.generativeai as genai
 from dotenv import load_dotenv
+from base64 import b64encode
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="MindMate", page_icon="🧠", layout="wide")
@@ -303,133 +27,214 @@ gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
 # ---------------- SESSION ----------------
 if "username" not in st.session_state:
-    st.session_state.username = ""
+    st.session_state.username = None
 if "daily_goal" not in st.session_state:
     st.session_state.daily_goal = ""
-if "greeted" not in st.session_state:
-    st.session_state.greeted = False
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if "journal_entries" not in st.session_state:
-    st.session_state.journal_entries = []
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-# ---------------- FORCE LIGHT THEME + HIDE SIDEBAR ----------------
-st.markdown("""
+# ---------------- BACKGROUND IMAGE HANDLING ----------------
+def set_bg_image(image_path):
+    with open(image_path, "rb") as img_file:
+        encoded = b64encode(img_file.read()).decode()
+    st.markdown(f"""
     <style>
-    section[data-testid="stSidebar"] {
-        display: none !important;
-    }
-
-    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600&display=swap');
-
-    html, body, .stApp {
+    html, body, .stApp {{
+        background-image: url("data:image/jpg;base64,{encoded}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
         font-family: 'Comfortaa', sans-serif;
-        background-color: #f4f6f8;
-        color: #2d3436;
-        transition: background-color 0.8s ease, color 0.8s ease;
-        scroll-behavior: smooth;
-    }
-
-    .stTextInput, .stTextArea textarea {
-        background-color: #ffffff !important;
-        color: #2d3436 !important;
-        border: 2px solid #0984e3 !important;
-        border-radius: 15px;
-        padding: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        transition: all 0.3s ease-in-out;
-    }
-
-    .stTextInput:hover, .stTextArea:hover textarea {
-        transform: scale(1.02);
-        box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-    }
-
-    button[kind="primary"] {
-        background-color: #0984e3 !important;
-        color: white !important;
-        border-radius: 15px;
-        padding: 0.6em 1.2em;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: transform 0.3s ease, background-color 0.4s ease;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-    }
-
-    button[kind="primary"]:hover {
-        transform: scale(1.05);
-        background-color: #74b9ff !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
-        color: #0984e3;
-        font-weight: 700;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-        animation: fadeInUp 0.6s ease;
-    }
-
-    .journal-entry {
-        background-color: #dfe6e9;
-        padding: 20px;
-        margin: 15px 0;
-        border-left: 5px solid #0984e3;
-        border-radius: 15px;
-        color: #2d3436;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        animation: fadeInUp 0.4s ease;
-    }
-
-    .journal-entry:hover {
-        transform: scale(1.01);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .chat-bubble {
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 15px;
-        animation: fadeInUp 0.4s ease;
-    }
-
-    .chat-bubble.user {
-        background-color: #ffeaa7;
-        color: #2d3436;
-        align-self: flex-end;
-    }
-
-    .chat-bubble.bot {
-        background-color: #a29bfe;
-        color: white;
-    }
+        font-weight: bold;
+        font-size: 24px;
+        color: #000000;
+    }}
+    h1, h2, h3, h4, h5, h6 {{
+        color: #000000 !important;
+        font-weight: 800 !important;
+        text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+    }}
+    .stTextInput > div > div > input,
+    .stTextArea textarea,
+    .stNumberInput input,
+    .stSelectbox select,
+    .stButton > button {{
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+        border: 3px solid #000000 !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        background-color: #F9F6EE !important;
+        box-shadow: 2px 2px 12px rgba(0,0,0,0);
+    }}
     </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
+# ---------------- BACKGROUND ASSIGNMENT ----------------
+if not st.session_state.logged_in:
+    set_bg_image("C:/Users/tanis/Desktop/mindmate/img.jpg")
+else:
+    set_bg_image("C:/Users/tanis/Desktop/mindmate/api.png")
+
+
+def set_bg_image(image_path):
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as img_file:
+            encoded = b64encode(img_file.read()).decode()
+        st.markdown(f"""
+        <style>
+        html, body, .stApp {{
+            background-image: url("data:image/jpg;base64,{encoded}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: bold;
+            font-size: 24px;
+            color: #000000;
+        }}
+        h1, h2, h3, h4, h5, h6 {{
+            color: #000000 !important;
+            font-weight: 900 !important;
+        }}
+        .stTextInput > div > div > input,
+        .stTextArea textarea,
+        .stNumberInput input,
+        .stSelectbox select,
+        .stButton > button {{
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            color: #000000 !important;
+            border: 2px solid #000000 !important;
+            border-radius: 12px !important;
+            padding: 12px !important;
+            background-color: #F9F6EE !important;
+            box-shadow: 2px 2px 12px rgba(0,0,0,0);
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+    # else:
+        # st.warning(f"⚠️ Background image not found at: {image_path}")
+
+# ---------------- LOGIN/REGISTER ----------------
+if not st.session_state.logged_in:
+    st.markdown('<div class="form-glass">', unsafe_allow_html=True)
+    st.title("🧠 Welcome to MindMate")
+    choice = st.radio("Choose an option", ["Login", "Register"])
+
+    if "just_registered" in st.session_state and st.session_state.just_registered:
+        choice = "Login"
+        st.session_state.just_registered = False
+
+    if choice == "Login":
+        st.markdown("### 🔐 <strong>Login to Continue</strong>", unsafe_allow_html=True)
+        username = st.text_input("👤 Username")
+        password = st.text_input("🔑 Password", type="password")
+        if st.button("Login"):
+            if authenticate_user(username, password):
+                st.success("✅ Login successful")
+                st.session_state.username = username
+                st.session_state.logged_in = True
+                st.rerun()
+            else:
+                st.error("❌ Invalid username or password")
+
+    elif choice == "Register":
+        st.markdown("### 📝 <strong>Register New Account</strong>", unsafe_allow_html=True)
+        with st.form("register_form"):
+            username = st.text_input("👤 Username")
+            password = st.text_input("🔒 Password", type="password")
+            email = st.text_input("📧 Email")
+            age = st.number_input("🎂 Age", min_value=1, max_value=120)
+            gender = st.selectbox("⚧️ Gender", ["Male", "Female", "Other"])
+            height = st.number_input("📏 Height (cm)", min_value=30.0, max_value=250.0)
+            weight = st.number_input("⚖️ Weight (kg)", min_value=1.0, max_value=300.0)
+            disease = st.text_input("🦠 Known Disease (Optional)")
+            medical_condition = st.text_input("🧬 Medical Condition (Optional)")
+            submitted = st.form_submit_button("Register")
+
+            if submitted:
+                if register_user(username, password, email, age, gender, height, weight, disease, medical_condition):
+                    st.success("✅ Registered! Redirecting to login...")
+                    st.session_state["just_registered"] = True
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Username already exists")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
+
+# ---------------- BACKGROUND ASSIGNMENT ----------------
+if not st.session_state.logged_in:
+    set_bg_image("C:/Users/tanis/Desktop/mindmate/img.jng")
+else:
+    set_bg_image("C:/Users/tanis/Desktop/mindmate/api.png")
+
+# ---------------- LOGIN/REGISTER ----------------
+if not st.session_state.logged_in:
+    st.markdown('<div class="form-glass">', unsafe_allow_html=True)
+    st.title("🧠 Welcome to MindMate")
+    choice = st.radio("Choose an option", ["Login", "Register"])
+
+    if "just_registered" in st.session_state and st.session_state.just_registered:
+        choice = "Login"
+        st.session_state.just_registered = False
+
+    if choice == "Login":
+        st.markdown("### 🔐 <strong>Login to Continue</strong>", unsafe_allow_html=True)
+        username = st.text_input("👤 Username")
+        password = st.text_input("🔑 Password", type="password")
+        if st.button("Login"):
+            if authenticate_user(username, password):
+                st.success("✅ Login successful")
+                st.session_state.username = username
+                st.session_state.logged_in = True
+                st.rerun()
+            else:
+                st.error("❌ Invalid username or password")
+
+    elif choice == "Register":
+        st.markdown("### 📝 <strong>Register New Account</strong>", unsafe_allow_html=True)
+        with st.form("register_form"):
+            username = st.text_input("👤 Username")
+            password = st.text_input("🔒 Password", type="password")
+            email = st.text_input("📧 Email")
+            age = st.number_input("🎂 Age", min_value=1, max_value=120)
+            gender = st.selectbox("⚧️ Gender", ["Male", "Female", "Other"])
+            height = st.number_input("📏 Height (cm)", min_value=30.0, max_value=250.0)
+            weight = st.number_input("⚖️ Weight (kg)", min_value=1.0, max_value=300.0)
+            disease = st.text_input("🦠  Disease (Optional)")
+            medical_condition = st.text_input("🧬 Medical Condition (Optional)")
+            submitted = st.form_submit_button("Register")
+
+            if submitted:
+                if register_user(username, password, email, age, gender, height, weight, disease, medical_condition):
+                    st.success("✅ Registered! Redirecting to login...")
+                    st.session_state["just_registered"] = True
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Username already exists")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
 # ---------------- MAIN UI ----------------
 st.title(":brain: MindMate – Your AI Therapeutic Companion")
 
-# ---------------- User Info ----------------
-if not st.session_state.username:
-    with st.form("username_form"):
-        st.markdown("## 👋 Welcome to MindMate!")
-        name_input = st.text_input("What should I call you?")
-        submitted = st.form_submit_button("Continue")
-        if submitted and name_input.strip():
-            st.session_state.username = name_input.strip()
-            st.rerun()
+# ---------------- LOGOUT ----------------
+if st.button("🚪 Logout"):
+    st.session_state.logged_in = False
+    st.session_state.username = None
+    st.session_state.daily_goal = ""
+    st.session_state.chat_history = []
+    st.rerun()
 
-if st.session_state.username and not st.session_state.daily_goal:
+# ---------------- GOAL SETUP ----------------
+if not st.session_state.daily_goal:
     with st.form("goal_form"):
         goal_input = st.text_input(f"🎯 Hi {st.session_state.username}, what's your goal for today?")
         submitted = st.form_submit_button("Set Goal")
@@ -437,10 +242,10 @@ if st.session_state.username and not st.session_state.daily_goal:
             st.session_state.daily_goal = goal_input.strip()
             st.rerun()
 
-# ---------------- Tabs ----------------
-tab1, tab2 = st.tabs(["💬 Chat", "📓 Journal"])
+# ---------------- TABS ----------------
+tab1, tab2, tab3 = st.tabs(["💬 Chat", "📓 Journal", "📄 Health Report Analysis"])
 
-# ---------------- Chat Tab ----------------
+# ---------------- CHAT TAB ----------------
 with tab1:
     with st.form("chat_form", clear_on_submit=True):
         user_input = st.text_input("You:", "")
@@ -455,6 +260,7 @@ with tab1:
             try:
                 gemini_response = gemini_model.generate_content(user_input)
                 reply = gemini_response.text
+                reply = reply.replace("{name}", st.session_state.username)
             except Exception as e:
                 reply = f"⚠️ Error: {str(e)}"
 
@@ -471,36 +277,57 @@ with tab1:
         safe_msg = html.escape(message).encode('utf-16', 'surrogatepass').decode('utf-16')
         st.markdown(f"**{sender}:** {safe_msg}")
 
-# ---------------- Journal Tab ----------------
+# ---------------- JOURNAL TAB ----------------
 with tab2:
     st.subheader(":memo: Journal your thoughts")
     entry = st.text_area("Write here:")
-    if st.button("💾 Save Entry"):
+    if st.button("📂 Save Entry"):
         if entry.strip():
-            with open("data/journal.txt", "a", encoding="utf-8") as f:
-                f.write(f"{entry.strip()}\n---\n")
+            save_user_journal(st.session_state.username, entry)
             st.success("Entry saved!")
 
-    if os.path.exists("data/journal.txt"):
-        with open("data/journal.txt", "r", encoding="utf-8") as f:
-            all_entries = f.read().split("---")
-            all_entries = [e.strip() for e in all_entries if e.strip()]
+    all_entries = load_user_journal(st.session_state.username)
 
+    if all_entries:
         st.subheader(":books: Your Entries")
         for i, e in enumerate(reversed(all_entries[-5:])):
             col1, col2 = st.columns([6, 1])
             with col1:
                 new_text = st.text_area(f"Entry {i+1}", e, key=f"entry_{i}")
             with col2:
-                if st.button("🗑️ Delete", key=f"del_{i}"):
+                if st.button("🖑️ Delete", key=f"del_{i}"):
                     all_entries.pop(all_entries.index(e))
-                    with open("data/journal.txt", "w", encoding="utf-8") as f:
+                    with open(get_user_journal_path(st.session_state.username), "w", encoding="utf-8") as f:
                         f.write("\n---\n".join(all_entries))
                     st.rerun()
                 if st.button("✅ Update", key=f"upd_{i}"):
                     all_entries[all_entries.index(e)] = new_text
-                    with open("data/journal.txt", "w", encoding="utf-8") as f:
+                    with open(get_user_journal_path(st.session_state.username), "w", encoding="utf-8") as f:
                         f.write("\n---\n".join(all_entries))
                     st.success("Entry updated!")
                     st.rerun()
 
+# ---------------- REPORT UPLOAD TAB ----------------
+with tab3:
+    st.subheader("📄 Upload a Health Report for AI Insights")
+    uploaded_file = st.file_uploader("Upload Report (PDF or TXT)", type=["pdf", "txt"])
+
+    if uploaded_file:
+        import PyPDF2
+
+        if uploaded_file.type == "application/pdf":
+            reader = PyPDF2.PdfReader(uploaded_file)
+            text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+        else:
+            text = uploaded_file.read().decode("utf-8")
+
+        st.text_area("📋 Extracted Text", text, height=200)
+
+        if st.button("🧠 Analyze with Gemini"):
+            try:
+                prompt = f"You are a medical assistant. Analyze this health report and provide:\n\n1. Overview of the content\n2. Disease explanation\n3. Symptoms\n4. Wellness tips\n\nReport:\n{text}"
+                analysis = gemini_model.generate_content(prompt)
+                st.markdown("### 🧾 Gemini Report Summary")
+                st.markdown(analysis.text)
+            except Exception as e:
+                st.error(f"❌ Gemini Analysis Error: {str(e)}")

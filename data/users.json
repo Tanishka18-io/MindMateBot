@@ -1,0 +1,35 @@
+{
+  "TANISHKA": "d8c71ca75131ebb758de8931ee2f097a252806469fea4079c847633d86576c1a",
+  "vineet": "8588310a98676af6e22563c1559e1ae20f85950792bdcd0c8f334867c54581cd",
+  "hyutyu": "db67013feb7579203f21ad9cb743cb1d5241d26ef6a6f4452c9eaa9c6f4627fb",
+  "tanishka ": {
+    "password": "80a97c2f50f2afd48356c465c9ccb04a298babe0c6061d0ed02c747df6454b88",
+    "email": "tanishkatiwari18@gmail.com",
+    "age": 21,
+    "gender": "Female",
+    "height": 158.0,
+    "weight": 55.0,
+    "disease": "diabetic",
+    "medical_condition": "none"
+  },
+  "nishi": {
+    "password": "5c80565db6f29da0b01aa12522c37b32f121cbe47a861ef7f006cb22922dffa1",
+    "email": "tanishkatiwari18@gmail.com",
+    "age": 19,
+    "gender": "Female",
+    "height": 158.0,
+    "weight": 50.0,
+    "disease": "depression",
+    "medical_condition": "none"
+  },
+  "vinneet": {
+    "password": "1df1854015e31ca286d015345eaff29a6c6073f70984a3a746823d4cac16b075",
+    "email": "tanishkatiwari18@gmail.com",
+    "age": 23,
+    "gender": "Male",
+    "height": 160.0,
+    "weight": 56.0,
+    "disease": "allergy",
+    "medical_condition": "none"
+  }
+}
