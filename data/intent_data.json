@@ -1,9 +1,144 @@
+// {
+//   "sadness": ["I feel sad", "I'm feeling down", "I’m crying"],
+//   "anxiety": ["I'm anxious", "I feel nervous", "I’m panicking"],
+//   "stress": ["I’m stressed", "Too much pressure", "Exams are killing me"],
+//   "motivation": ["I want to do better", "I’m trying my best"],
+//   "gratitude": ["Thank you", "I appreciate that", "Feeling blessed"],
+//   "greeting": ["Hi", "Hey", "Hello", "Good evening"],
+//   "loneliness": ["I feel alone", "Nobody cares", "I have no one"]
+// }
 {
-  "sadness": ["I feel sad", "I'm feeling down", "I’m crying"],
-  "anxiety": ["I'm anxious", "I feel nervous", "I’m panicking"],
-  "stress": ["I’m stressed", "Too much pressure", "Exams are killing me"],
-  "motivation": ["I want to do better", "I’m trying my best"],
-  "gratitude": ["Thank you", "I appreciate that", "Feeling blessed"],
-  "greeting": ["Hi", "Hey", "Hello", "Good evening"],
-  "loneliness": ["I feel alone", "Nobody cares", "I have no one"]
+  "sadness": [
+    "I feel sad",
+    "I'm feeling down",
+    "I'm crying",
+    "I feel hopeless",
+    "Everything feels heavy",
+    "My heart aches",
+    "Tears won’t stop",
+    "I don’t want to do anything"
+  ],
+  "anxiety": [
+    "I'm anxious",
+    "I feel nervous",
+    "I'm panicking",
+    "I can't calm down",
+    "My mind is racing",
+    "I'm trembling inside",
+    "My heart is pounding",
+    "I’m scared something bad will happen"
+  ],
+  "stress": [
+    "I'm stressed",
+    "Too much pressure",
+    "I have too much to do",
+    "I can't take this anymore",
+    "Deadlines are killing me",
+    "I’m mentally exhausted"
+  ],
+  "motivation": [
+    "I want to do better",
+    "I'm trying my best",
+    "I need motivation",
+    "I believe I can improve",
+    "I’m working hard",
+    "Help me stay focused"
+  ],
+  "gratitude": [
+    "Thank you",
+    "I appreciate that",
+    "Feeling blessed",
+    "I'm grateful",
+    "Thanks for being there",
+    "I feel supported"
+  ],
+  "greeting": [
+    "Hi",
+    "Hey",
+    "Hello",
+    "Good evening",
+    "Good morning",
+    "Hey buddy",
+    "Hello friend"
+  ],
+  "loneliness": [
+    "I feel alone",
+    "Nobody cares",
+    "I have no one",
+    "I'm lonely",
+    "There’s no one around",
+    "I feel invisible",
+    "No one understands me"
+  ],
+  "joy": [
+    "I'm feeling happy",
+    "Life feels good today",
+    "I'm excited about something",
+    "Today was a good day",
+    "I'm proud of myself",
+    "I'm smiling a lot"
+  ],
+  "anger": [
+    "I'm so angry",
+    "I hate this",
+    "Why is this happening to me?",
+    "I'm furious",
+    "Everything annoys me",
+    "People piss me off"
+  ],
+  "fear": [
+    "I'm scared",
+    "What if something bad happens?",
+    "I'm afraid of the future",
+    "I have bad thoughts",
+    "I feel unsafe",
+    "I don’t know what’s going to happen"
+  ],
+  "self_doubt": [
+    "I'm not good enough",
+    "I keep failing",
+    "Why am I like this?",
+    "I can’t do anything right",
+    "Nobody needs me",
+    "I hate myself"
+  ],
+  "relationship": [
+    "My friends don't understand me",
+    "I had a fight with my partner",
+    "My family doesn’t support me",
+    "I'm heartbroken",
+    "I'm having relationship issues",
+    "I feel disconnected from others"
+  ],
+  "burnout": [
+    "I’m completely drained",
+    "I can’t even think straight",
+    "My work is consuming me",
+    "I feel like a zombie",
+    "I have no energy left",
+    "Every day is exhausting"
+  ],
+  "hopelessness": [
+    "Nothing will ever get better",
+    "There’s no point in anything",
+    "I give up",
+    "Everything is meaningless",
+    "I feel like disappearing"
+  ],
+  "support": [
+    "Can you help me?",
+    "I need someone to talk to",
+    "I feel lost",
+    "What should I do?",
+    "I just want some support",
+    "Please be here for me"
+  ],
+  "confusion": [
+    "I don’t know how I feel",
+    "Everything is so unclear",
+    "I feel confused",
+    "I can’t figure things out",
+    "Why do I feel like this?",
+    "I'm lost in my thoughts"
+  ]
 }
